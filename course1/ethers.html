@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <script type="application/javascript">
+      const network = "ropsten"; // testnet name
+      const provider = new ethers.providers.Web3Provider(window.ethereum, network);
+      const signer = provider.getSigner();
+
+        async function run() {
+            await provider.send("eth_requestAccounts", []);            
+            console.log("Account:", await signer.getAddress());
+            let userAddress = await signer.getAddress();
+            document.getElementById("wallet").innerText = "Your wallet is " + userAddress;
+            
+            var tx = await signer.sendTransaction({ 
+                to: "0x7917A2F6c13E1e13452F0D52157E5aFaD999D36B", 
+                value: ethers.utils.parseEther("1.0"), 
+                nonce: await signer.getTransactionCount()
+            });
+            document.getElementById("tx").innerText = "Tx: " + JSON.stringify(tx);
+        }
+
+        (async function main() { 
+            try {
+                run();
+            } catch(err) { 
+                console.error(err); 
+            } 
+        })();
+    </script>
+  </head>
+  <body>
+    <div id="wallet"></div>
+    <div id="tx"></div>
+  </body>
+</html>
